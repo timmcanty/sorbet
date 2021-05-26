@@ -357,6 +357,7 @@ package(default_visibility = ["//visibility:public"])
                     "@com_stripe_ruby_typer//third_party/ruby:vm-method-type-sorbet.patch",
                     "@com_stripe_ruby_typer//third_party/ruby:is-lambda-ifunc.patch",
                     "@com_stripe_ruby_typer//third_party/ruby:init-sorbet-t-modules.patch",
+                    "@com_stripe_sorbet_llvm//third_party/ruby:cfunc-profile-frames.patch",
                 ],
                 patch_tool = "patch",
             )
