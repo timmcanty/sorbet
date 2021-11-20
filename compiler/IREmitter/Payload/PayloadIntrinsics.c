@@ -755,4 +755,15 @@ VALUE sorbet_int_rb_str_succ(VALUE recv, ID fun, int argc, VALUE *const restrict
     rb_check_arity(argc, 0, 0);
     return rb_str_succ(recv);
 }
+
+// Symbol#to_s
+// Symbol#id2name
+// Calling convention: 0
+extern VALUE rb_sym_to_s(VALUE obj);
+
+VALUE sorbet_int_rb_sym_to_s(VALUE recv, ID fun, int argc, VALUE *const restrict args, BlockFFIType blk,
+                             VALUE closure) {
+    rb_check_arity(argc, 0, 0);
+    return rb_sym_to_s(recv);
+}
 #endif /* SORBET_COMPILER_IMPORTED_INTRINSICS_H */

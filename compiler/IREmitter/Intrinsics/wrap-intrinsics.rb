@@ -305,6 +305,8 @@ module Intrinsics
       "String#start_with?",
       "String#succ",
       "String#to_sym",
+      "Symbol#id2name",
+      "Symbol#to_s",
     ], T::Set[String])
 
     sig {params(topdir: String, ruby: String, ruby_source: String).void}

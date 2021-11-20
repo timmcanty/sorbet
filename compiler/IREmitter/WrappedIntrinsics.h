@@ -90,4 +90,6 @@
     {core::Symbols::String(), "start_with?", CMethod{"sorbet_int_rb_str_start_with"}},
     {core::Symbols::String(), "succ", CMethod{"sorbet_int_rb_str_succ"}},
     {core::Symbols::String(), "next", CMethod{"sorbet_int_rb_str_succ"}},
+    {core::Symbols::Symbol(), "to_s", CMethod{"sorbet_int_rb_sym_to_s"}},
+    {core::Symbols::Symbol(), "id2name", CMethod{"sorbet_int_rb_sym_to_s"}},
     // clang-format on
