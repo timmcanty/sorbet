@@ -1275,9 +1275,9 @@ string MethodRef::toStringWithOptions(const GlobalState &gs, int tabs, bool show
     printResultType(gs, buf, sym->resultType, tabs, showRaw);
     printLocs(gs, buf, sym->locs(), showRaw);
 
-    if (sym->rebind().exists()) {
+    if (sym->rebind.exists()) {
         fmt::format_to(std::back_inserter(buf), " rebindTo {}",
-                       showRaw ? sym->rebind().toStringFullName(gs) : sym->rebind().showFullName(gs));
+                       showRaw ? sym->rebind.toStringFullName(gs) : sym->rebind.showFullName(gs));
     }
 
     ENFORCE(!absl::c_any_of(to_string(buf), [](char c) { return c == '\n'; }));
@@ -2049,7 +2049,7 @@ Method Method::deepCopy(const GlobalState &to) const {
         auto &store = result.arguments_.emplace_back(mem.deepCopy());
         store.name = NameRef(to, mem.name);
     }
-    result.rebind_ = this->rebind_;
+    result.rebind = this->rebind;
     result.intrinsic = this->intrinsic;
     return result;
 }
@@ -2204,7 +2204,7 @@ u4 Method::hash(const GlobalState &gs) const {
     result = mix(result, !this->resultType ? 0 : this->resultType.hash(gs));
     result = mix(result, this->flags);
     result = mix(result, this->owner.id());
-    result = mix(result, this->rebind_.id());
+    result = mix(result, this->rebind.id());
     for (const auto &arg : arguments_) {
         // If an argument's resultType changes, then the sig has changed.
         auto type = arg.type;
@@ -2227,7 +2227,7 @@ u4 Method::methodShapeHash(const GlobalState &gs) const {
     u4 result = _hash(name.shortName(gs));
     result = mix(result, this->flags);
     result = mix(result, this->owner.id());
-    result = mix(result, this->rebind_.id());
+    result = mix(result, this->rebind.id());
     result = mix(result, this->hasSig());
     for (auto &arg : this->methodArgumentHash(gs)) {
         result = mix(result, arg);
