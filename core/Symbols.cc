@@ -1089,7 +1089,7 @@ bool Method::isPrintable(const GlobalState &gs) const {
         return true;
     }
 
-    for (auto typeParam : this->typeParams) {
+    for (auto typeParam : this->typeArguments) {
         if (typeParam.data(gs)->isPrintable(gs)) {
             return true;
         }
@@ -1251,7 +1251,7 @@ string MethodRef::toStringWithOptions(const GlobalState &gs, int tabs, bool show
                        fmt::map_join(methodFlags, "|", [](const auto &flag) { return flag; }));
     }
 
-    auto typeMembers = sym->typeArguments();
+    auto typeMembers = sym->typeArguments;
     auto it =
         remove_if(typeMembers.begin(), typeMembers.end(), [&gs](auto &sym) -> bool { return sym.data(gs)->isFixed(); });
     typeMembers.erase(it, typeMembers.end());
@@ -1274,7 +1274,7 @@ string MethodRef::toStringWithOptions(const GlobalState &gs, int tabs, bool show
 
     ENFORCE(!absl::c_any_of(to_string(buf), [](char c) { return c == '\n'; }));
     fmt::format_to(std::back_inserter(buf), "\n");
-    for (auto ta : sym->typeArguments()) {
+    for (auto ta : sym->typeArguments) {
         ENFORCE_NO_TIMER(ta.exists());
 
         if (!showFull && !ta.data(gs)->isPrintable(gs)) {
@@ -2005,7 +2005,7 @@ Method Method::deepCopy(const GlobalState &to) const {
     result.resultType = this->resultType;
     result.name = NameRef(to, this->name);
     result.locs_ = this->locs_;
-    result.typeParams = this->typeParams;
+    result.typeArguments = this->typeArguments;
     result.arguments.reserve(this->arguments.size());
     for (auto &mem : this->arguments) {
         auto &store = result.arguments.emplace_back(mem.deepCopy());
@@ -2078,7 +2078,7 @@ void Method::sanityCheck(const GlobalState &gs) const {
     MethodRef current2 = const_cast<GlobalState &>(gs).enterMethodSymbol(this->loc(), this->owner, this->name);
 
     ENFORCE_NO_TIMER(current == current2);
-    for (auto &tp : typeParams) {
+    for (auto &tp : typeArguments) {
         ENFORCE_NO_TIMER(tp.data(gs)->name.exists(), name.toString(gs) + " has a member symbol without a name");
         ENFORCE_NO_TIMER(tp.exists(), name.toString(gs) + "." + tp.data(gs)->name.toString(gs) +
                                           " corresponds to a core::Symbols::noTypeArgument()");
@@ -2176,7 +2176,7 @@ u4 Method::hash(const GlobalState &gs) const {
         result = mix(result, type.hash(gs));
         result = mix(result, _hash(arg.name.shortName(gs)));
     }
-    for (const auto &e : typeParams) {
+    for (const auto &e : typeArguments) {
         if (e.exists()) {
             result = mix(result, _hash(e.data(gs)->name.shortName(gs)));
         }
