@@ -71,7 +71,7 @@ public:
             int i = 0;
             auto methodName = primaryMethod.data(gs)->name;
             auto current = primaryMethod;
-            while (current.data(gs)->isOverloaded()) {
+            while (current.data(gs)->flags.isOverloaded) {
                 i++;
                 auto overloadName = gs.lookupNameUnique(core::UniqueNameKind::Overload, methodName, i);
                 auto overload = primaryMethod.data(gs)->owner.data(gs)->findMethod(gs, overloadName);
@@ -250,7 +250,7 @@ protected:
         int i = 0;
         bool acceptsBlock = false;
         auto current = primaryMethod;
-        while (current.data(gs)->isOverloaded()) {
+        while (current.data(gs)->flags.isOverloaded) {
             const auto &args = current.data(gs)->arguments;
             if (!args.empty() && !args.back().isSyntheticBlockArgument()) {
                 acceptsBlock = true;
@@ -495,7 +495,7 @@ public:
         ENFORCE(funcSym.exists());
 
         // We are going to rely on compiled final methods having their return values checked.
-        const bool needsTypechecking = funcSym.data(cs)->isFinalMethod();
+        const bool needsTypechecking = funcSym.data(cs)->flags.isFinal;
 
         if (methodKind == core::Names::attrReader() && !needsTypechecking) {
             const char *payloadFuncName = isSelf ? "sorbet_defineIvarMethodSingleton" : "sorbet_defineIvarMethod";

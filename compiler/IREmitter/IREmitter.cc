@@ -956,7 +956,7 @@ void IREmitter::run(CompilerState &cs, cfg::CFG &cfg, const ast::MethodDef &md) 
     emitBlockExits(cs, cfg, irctx);
     emitPostProcess(cs, cfg, irctx);
 
-    if (md.symbol.data(cs)->isFinalMethod()) {
+    if (md.symbol.data(cs)->flags.isFinal) {
         emitDirectWrapper(cs, md, irctx);
     }
 
