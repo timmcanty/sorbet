@@ -17,7 +17,7 @@ class GlobalState;
  * The constructor builds up a lookup table from every NameRef in `from` to an equivalent NameRef in `to`, inserting new
  * names into `to` where needed. Then, that table can be used to rewrite multiple ASTs from `from`.
  */
-class GlobalSubstitution {
+class GlobalSubstitution final {
 public:
     GlobalSubstitution(const GlobalState &from, GlobalState &to, const GlobalState *optionalCommonParent = nullptr);
 
@@ -64,6 +64,20 @@ private:
     bool fastPath;
 
     const int toGlobalStateId;
+};
+
+/**
+ * Like multiple GlobalSubstitutions that all target the same GlobalState.
+ */
+class IndexedSubstitution final {
+    GlobalState &to;
+
+public:
+    IndexedSubstitution(GlobalState &to);
+
+    // Construct a new GlobalSubstitution that will rewrite names to the shared target.
+    GlobalSubstitution mergeNames(const GlobalState &from);
+
 };
 
 /**
