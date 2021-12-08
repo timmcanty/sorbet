@@ -61,9 +61,10 @@ private:
     std::vector<NameRef> constantNameSubstitution;
     std::vector<NameRef> uniqueNameSubstitution;
     // set if no substitution is actually necessary
-    bool fastPath;
+    bool fastPath = false;
 
-    const int toGlobalStateId;
+    // TODO: any way to make this const, but permit copying?
+    int toGlobalStateId;
 };
 
 /**
