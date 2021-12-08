@@ -435,7 +435,7 @@ struct IndexSubstitutionJob {
     IndexSubstitutionJob() {}
 
     IndexSubstitutionJob(core::GlobalState &to, IndexResult res) : subst{}, trees{std::move(res.trees)} {
-        if (absl::c_any_of(res.trees, [&to](auto &parsed) { return !parsed.file.data(to).cached; })) {
+        if (absl::c_any_of(this->trees, [&to](auto &parsed) { return !parsed.file.data(to).cached; })) {
             this->subst.emplace(*res.gs, to);
         }
     }
