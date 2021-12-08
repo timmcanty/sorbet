@@ -78,7 +78,6 @@ public:
 
     // Construct a new GlobalSubstitution that will rewrite names to the shared target.
     GlobalSubstitution mergeNames(const GlobalState &from);
-
 };
 
 /**
