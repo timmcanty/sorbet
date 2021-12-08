@@ -122,12 +122,6 @@ bool GlobalSubstitution::useFastPath() const {
     return fastPath;
 }
 
-IndexedSubstitution::IndexedSubstitution(GlobalState &to) : to{to} {}
-
-GlobalSubstitution IndexedSubstitution::mergeNames(const GlobalState &from) {
-    return GlobalSubstitution(from, this->to);
-}
-
 LazyGlobalSubstitution::LazyGlobalSubstitution(const GlobalState &fromGS, GlobalState &toGS)
     : fromGS(fromGS), toGS(toGS) {
     // Pre-define an entry for the empty name.

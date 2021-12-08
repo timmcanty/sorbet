@@ -68,19 +68,6 @@ private:
 };
 
 /**
- * Like multiple GlobalSubstitutions that all target the same GlobalState.
- */
-class IndexedSubstitution final {
-    GlobalState &to;
-
-public:
-    IndexedSubstitution(GlobalState &to);
-
-    // Construct a new GlobalSubstitution that will rewrite names to the shared target.
-    GlobalSubstitution mergeNames(const GlobalState &from);
-};
-
-/**
  * GlobalSubstitution, but lazily populates `nameSubstitution` _and_ builds up a UsageHash for the file.
  * Used in the hashing package as a part of the AST hashing process, which rewrites ASTs from the main GlobalState into
  * ASTs for new and empty GlobalStates.
