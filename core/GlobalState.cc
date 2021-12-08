@@ -1806,6 +1806,11 @@ unique_ptr<GlobalState> GlobalState::deepCopy(bool keepId) const {
     return result;
 }
 
+void GlobalState::copyFileTable(const core::GlobalState &other) {
+    this->files = other.files;
+    this->fileRefByPath = other.fileRefByPath;
+}
+
 string_view GlobalState::getPrintablePath(string_view path) const {
     // Only strip the path prefix if the path has it.
     if (path.substr(0, pathPrefix.length()) == pathPrefix) {

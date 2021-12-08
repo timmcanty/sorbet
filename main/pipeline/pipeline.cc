@@ -420,6 +420,7 @@ ast::ExpressionPtr readFileWithStrictnessOverrides(core::GlobalState &gs, core::
 
 struct IndexResult {
     unique_ptr<core::GlobalState> gs;
+    vector<bool> cached;
     vector<ast::ParsedFile> trees;
 };
 
@@ -474,9 +475,17 @@ IndexResult indexSuppliedFiles(const shared_ptr<core::GlobalState> &baseGs, vect
         fileq->push(move(file), 1);
     }
 
-    workers.multiplexJob("indexSuppliedFiles", [baseGs, &opts, fileq, resultq, &kvstore]() {
+    core::GlobalState emptyGs{baseGs->errorQueue};
+    emptyGs.initEmpty();
+
+    workers.multiplexJob("indexSuppliedFiles", [baseGs, &emptyGs, &opts, fileq, resultq, &kvstore]() {
         Timer timeit(baseGs->tracer(), "indexSuppliedFilesWorker");
-        unique_ptr<core::GlobalState> localGs = baseGs->deepCopy();
+
+        // clone the empty global state to avoid manually re-entering everything, and copy the base filetable so that
+        // file sources are available.
+        unique_ptr<core::GlobalState> localGs = emptyGs.deepCopy();
+        localGs->copyFileTable(*baseGs);
+
         IndexThreadResultPack threadResult;
 
         {
@@ -484,8 +493,12 @@ IndexResult indexSuppliedFiles(const shared_ptr<core::GlobalState> &baseGs, vect
             for (auto result = fileq->try_pop(job); !result.done(); result = fileq->try_pop(job)) {
                 if (result.gotItem()) {
                     core::FileRef file = job;
+
                     auto cachedTree = readFileWithStrictnessOverrides(*localGs, file, opts, kvstore);
+                    threadResult.res.cached.emplace_back(ast::isa_tree<ast::EmptyTree>(cachedTree));
+
                     auto parsedFile = indexOne(opts, *localGs, file, move(cachedTree));
+
                     threadResult.res.trees.emplace_back(move(parsedFile));
                 }
             }
